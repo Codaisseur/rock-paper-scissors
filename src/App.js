@@ -22,6 +22,17 @@ class App extends React.Component {
     this.setState({
       games: this.games.resources
     });
+
+    if (this.state.currentGame !== null) {
+      let component = this;
+      this.games.resources.map(function(game) {
+        if (game._id === component.state.currentGame._id) {
+          component.setState({
+            currentGame: game
+          });
+        }
+      });
+    }
   }
 
   setPlayer(player) {
@@ -36,8 +47,20 @@ class App extends React.Component {
     });
   }
 
-  joinGame() {
-    this.games.save(this.state.currentGame, { playerTwo: this.state.currentPlayer });
+  joinGame(game) {
+    console.log("Joining game...");
+    if (game.playerOne === this.state.currentPlayer || game.playerTwo === this.state.currentPlayer || game.playerTwo === null) {
+      if (game.playerOne !== this.state.currentPlayer && game.playerTwo !== this.state.currentPlayer) {
+        console.log("Joining game as player two...");
+        this.games.save(game, { playerTwo: this.state.currentPlayer });
+      }
+
+      this.setState({
+        currentGame: game
+      });
+    } else {
+      window.alert("Can't touch this dung dung dung dung");
+    }
   }
 
   containerStyles() {
@@ -54,12 +77,6 @@ class App extends React.Component {
     };
   }
 
-  selectGame(game) {
-    this.setState({
-      currentGame: game
-    });
-  }
-
   render() {
     console.log(this.state);
     return (
@@ -72,7 +89,7 @@ class App extends React.Component {
           <NewPlayerComponent onCreate={this.setPlayer.bind(this)}/> }
 
         { this.state.currentGame === null &&
-          <GameListComponent games={this.state.games} onSelect={this.selectGame.bind(this)}/> }
+          <GameListComponent games={this.state.games} onSelect={this.joinGame.bind(this)}/> }
 
         { this.state.currentGame === null &&
           <NewGameComponent onCreate={this.createGame.bind(this)}/> }
