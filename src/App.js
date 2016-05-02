@@ -4,6 +4,7 @@ import NewPlayerComponent from './components/NewPlayerComponent';
 import NewGameComponent from './components/NewGameComponent';
 import GameListComponent from './components/GameListComponent';
 import PlayerMoveComponent from './components/PlayerMoveComponent';
+import Utils from './lib/Utils';
 
 class App extends React.Component {
   constructor() {
@@ -11,11 +12,17 @@ class App extends React.Component {
 
     this.games = new GameModel();
     this.games.subscribe(this.updateList.bind(this));
+    this.utils = new Utils();
+
+    let playerStorage = this.utils.store("rockpaperscissors.player");
+    if (playerStorage.length === 0) {
+      playerStorage = null;
+    }
 
     this.state = {
       games: [],
       currentGame: null,
-      currentPlayer: null,
+      currentPlayer: playerStorage,
       playerMove: ""
     };
   }
@@ -32,7 +39,9 @@ class App extends React.Component {
           component.setState({
             currentGame: game
           });
-          component.determineWinner();
+          if (game.winner === null) {
+            component.determineWinner();
+          }
         }
       });
     }
@@ -42,6 +51,7 @@ class App extends React.Component {
     this.setState({
       currentPlayer: player
     });
+    this.utils.store("rockpaperscissors.player", player);
   }
 
   createGame() {
@@ -121,7 +131,9 @@ class App extends React.Component {
   }
 
   storeWinner(winner) {
-    this.games.save(this.state.currentGame, { winner: winner });
+    if (this.state.currentGame.winner !== null) {
+      this.games.save(this.state.currentGame, { winner: winner });
+    }
   }
 
   makeMove(move) {
