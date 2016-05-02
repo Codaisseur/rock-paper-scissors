@@ -3,6 +3,7 @@ import GameModel from './models/GameModel';
 import NewPlayerComponent from './components/NewPlayerComponent';
 import NewGameComponent from './components/NewGameComponent';
 import GameListComponent from './components/GameListComponent';
+import PlayerMoveComponent from './components/PlayerMoveComponent';
 
 class App extends React.Component {
   constructor() {
@@ -14,7 +15,8 @@ class App extends React.Component {
     this.state = {
       games: [],
       currentGame: null,
-      currentPlayer: null
+      currentPlayer: null,
+      playerMove: ""
     };
   }
 
@@ -77,6 +79,13 @@ class App extends React.Component {
     };
   }
 
+  makeMove(move) {
+    console.log(move);
+    this.setState({
+      playerMove: move
+    });
+  }
+
   render() {
     console.log(this.state);
     return (
@@ -91,13 +100,20 @@ class App extends React.Component {
         { this.state.currentGame === null &&
           <GameListComponent games={this.state.games} onSelect={this.joinGame.bind(this)}/> }
 
-        { this.state.currentGame === null &&
+        { this.state.currentPlayer && this.state.currentGame === null &&
           <NewGameComponent onCreate={this.createGame.bind(this)}/> }
 
         { this.state.currentGame !== null &&
           <div className="game">
           <p>Player one: {this.state.currentGame.playerOne}</p>
           <p>Player two: {this.state.currentGame.playerTwo}</p>
+
+          <div>
+            <h2>{this.state.playerMove}</h2>
+            <PlayerMoveComponent move="Rock" onClick={this.makeMove.bind(this)} />
+            <PlayerMoveComponent move="Paper" onClick={this.makeMove.bind(this)} />
+            <PlayerMoveComponent move="Scissors" onClick={this.makeMove.bind(this)} />
+          </div>
         </div>}
       </div>
     );
