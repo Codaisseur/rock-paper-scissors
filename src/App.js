@@ -11,7 +11,8 @@ class App extends React.Component {
     this.games.subscribe(this.updateList.bind(this));
 
     this.state = {
-      games: []
+      games: [],
+      currentGame: null
     };
   }
 
@@ -41,13 +42,19 @@ class App extends React.Component {
     };
   }
 
+  selectGame(game) {
+    this.setState({
+      currentGame: game
+    });
+  }
+
   render() {
     console.log(this.state);
     return (
       <div style={this.containerStyles()}>
         <h1 style={this.headerStyle()}>Rock Paper Scissors</h1>
         <NewGameComponent onCreate={this.createGame.bind(this)}/>
-        <GameListComponent games={this.state.games}/>
+        <GameListComponent games={this.state.games} onSelect={this.selectGame.bind(this)}/>
       </div>
     );
   }
