@@ -1,4 +1,6 @@
 import React from 'react';
+import FlatButton from 'material-ui/lib/flat-button';
+import ListItem from 'material-ui/lib/lists/list-item';
 
 class GameListItemComponent extends React.Component {
   selectGame() {
@@ -48,21 +50,21 @@ class GameListItemComponent extends React.Component {
 
   render() {
     return (
-      <li>
+      <ListItem onClick={this.selectGame.bind(this)}>
         Game by {this.props.game.playerOne}
 
         { this.gameOpen() && !this.gameAlreadyJoined() &&
-          <button onClick={this.selectGame.bind(this)}>Join Game</button> }
+          <FlatButton onClick={this.selectGame.bind(this)} label="Join" primary={true} /> }
 
         { this.gameOpen() && this.gameAlreadyJoined() &&
-          <button onClick={this.selectGame.bind(this)}>Resume Game</button> }
+          <FlatButton onClick={this.selectGame.bind(this)} label="Resume" secondary={true} /> }
 
         { !this.gameFinished() && this.gameFull() &&
-          <span>(Full)</span> }
-
+          <FlatButton onClick={this.selectGame.bind(this)} label="Full" disabled={true} /> }
+        
         { this.gameFinished() &&
-          <span>({this.theWinner()})</span> }
-      </li>
+          <FlatButton onClick={this.selectGame.bind(this)} label={this.theWinner()} disabled={true} /> }
+      </ListItem>
     );
   }
 }
