@@ -151,6 +151,40 @@ class App extends React.Component {
     });
   }
 
+  winningMove() {
+    if (this.state.currentGame.playerOne === this.state.currentGame.winner) {
+      return this.state.currentGame.playerOneMove;
+    }
+
+    if (this.state.currentGame.playerTwo === this.state.currentGame.winner) {
+      return this.state.currentGame.playerTwoMove;
+    }
+  }
+
+  losingMove() {
+    if (this.state.currentGame.playerTwo !== this.state.currentGame.winner) {
+      return this.state.currentGame.playerTwoMove;
+    }
+
+    if (this.state.currentGame.playerOne !== this.state.currentGame.winner) {
+      return this.state.currentGame.playerOneMove;
+    }
+  }
+
+  winnerSentence() {
+    if (this.state.currentGame.winner === "draw") {
+      return `${this.winningMove()} draws ${this.losingMove()}`;
+    } else {
+      return `${this.winningMove()} trumps ${this.losingMove()}`;
+    }
+  }
+
+  clearCurrentGame() {
+    this.setState({
+      currentGame: null
+    });
+  }
+
   render() {
     console.log(this.state);
     return (
@@ -163,15 +197,14 @@ class App extends React.Component {
           <NewPlayerComponent onCreate={this.setPlayer.bind(this)}/> }
 
         { this.state.currentGame === null &&
-          <GameListComponent games={this.state.games} onSelect={this.joinGame.bind(this)}/> }
+          <GameListComponent games={this.state.games} currentPlayer={this.state.currentPlayer} onSelect={this.joinGame.bind(this)}/> }
 
         { this.state.currentPlayer && this.state.currentGame === null &&
           <NewGameComponent onCreate={this.createGame.bind(this)}/> }
 
-        { this.state.currentGame !== null &&
-          <div className="game">
-          <p>Player one: {this.state.currentGame.playerOne} ({this.state.currentGame.playerOneMove})</p>
-          <p>Player two: {this.state.currentGame.playerTwo} ({this.state.currentGame.playerTwoMove})</p>
+        { this.state.currentGame !== null && <div className="game">
+          <p>Player one: {this.state.currentGame.playerOne}</p>
+          <p>Player two: {this.state.currentGame.playerTwo}</p>
 
           { this.state.currentGame.winner === null && <div>
             <h2>{this.state.playerMove}</h2>
@@ -182,7 +215,12 @@ class App extends React.Component {
 
           { this.state.currentGame.winner !== null && <div>
             <h1>{this.state.currentGame.winner} won!</h1>
+            <p>{this.winnerSentence()}</p>
           </div> }
+
+          <div>
+            <button onClick={this.clearCurrentGame.bind(this)}>Back</button>
+          </div>
         </div>}
       </div>
     );
