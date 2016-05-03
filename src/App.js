@@ -152,7 +152,7 @@ class App extends React.Component {
   }
 
   storeWinner(winner) {
-    if (this.state.currentGame.winner !== null) {
+    if (this.state.currentGame.winner === null) {
       this.games.save(this.state.currentGame, { winner: winner });
     }
   }
