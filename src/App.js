@@ -9,19 +9,26 @@ import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import Theme from './lib/Theme';
 import AppBar from 'material-ui/lib/app-bar';
 import RaisedButton from 'material-ui/lib/raised-button';
+import Paper from 'material-ui/lib/paper';
 
 const buttonStyle = {
   margin: 12,
 };
 
 const containerStyles = {
-  width: "500px",
-  height: "500px",
+  width: '80%',
+  height: "auto",
   margin: "auto",
 };
 
+const paperStyle = {
+  margin: 20,
+  padding: 40
+};
+
 const headerStyle = {
-  textAlign: "center"
+  textAlign: "center",
+  fontFamily: 'Roboto'
 };
 
 const playerMoveContainerStyle = {
@@ -51,8 +58,7 @@ class App extends React.Component {
     this.state = {
       games: [],
       currentGame: null,
-      currentPlayer: playerStorage,
-      playerMove: ""
+      currentPlayer: playerStorage
     };
   }
 
@@ -158,7 +164,6 @@ class App extends React.Component {
   }
 
   makeMove(move) {
-    console.log(move);
     if (this.state.currentGame.playerOne === this.state.currentPlayer) {
       this.games.save(this.state.currentGame, { playerOneMove: move });
     }
@@ -166,10 +171,6 @@ class App extends React.Component {
     if (this.state.currentGame.playerTwo === this.state.currentPlayer) {
       this.games.save(this.state.currentGame, { playerTwoMove: move });
     }
-
-    this.setState({
-      playerMove: move
-    });
   }
 
   winningMove() {
@@ -192,6 +193,24 @@ class App extends React.Component {
     }
   }
 
+  yourMove() {
+    if (this.state.currentGame !== null) {
+      let currentPlayer = this.state.currentPlayer;
+      let playerOne = this.state.currentGame.playerOne;
+      let playerTwo = this.state.currentGame.playerTwo;
+
+      if (playerOne === currentPlayer) {
+        return this.state.currentGame.playerOneMove;
+      }
+
+      if (playerTwo === currentPlayer) {
+        return this.state.currentGame.playerTwoMove;
+      }
+    }
+
+    return "";
+  }
+
   winnerSentence() {
     if (this.state.currentGame.winner === "draw") {
       return `${this.winningMove()} draws ${this.losingMove()}`;
@@ -207,30 +226,28 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <div>
         <AppBar title="Rock Paper Scissors"/>
         <div style={containerStyles}>
-          <h1 style={headerStyle}></h1>
           { this.state.currentPlayer !== null &&
-            <p>Hi, {this.state.currentPlayer}</p> }
+            <h1 style={headerStyle}>Hi, {this.state.currentPlayer}</h1> }
 
           { this.state.currentPlayer === null &&
             <NewPlayerComponent onCreate={this.setPlayer.bind(this)}/> }
 
-          { this.state.currentGame === null &&
+          { this.state.currentGame === null && this.state.currentPlayer !== null &&
             <GameListComponent games={this.state.games} currentPlayer={this.state.currentPlayer} onSelect={this.joinGame.bind(this)}/> }
 
           { this.state.currentPlayer && this.state.currentGame === null &&
             <NewGameComponent onCreate={this.createGame.bind(this)}/> }
 
-          { this.state.currentGame !== null && <div className="game">
+          { this.state.currentGame !== null && <Paper style={paperStyle} zDepth={1} rounded={false}>
             <p>Player one: {this.state.currentGame.playerOne}</p>
             <p>Player two: {this.state.currentGame.playerTwo}</p>
 
             { this.state.currentGame.winner === null && <div style={playerMoveContainerStyle}>
-              <h2 style={playerMoveStyle}>&nbsp;{this.state.playerMove}</h2>
+              <h2 style={playerMoveStyle}>&nbsp;{this.yourMove()}</h2>
               <PlayerMoveComponent move="Rock" onClick={this.makeMove.bind(this)} />
               <PlayerMoveComponent move="Paper" onClick={this.makeMove.bind(this)} />
               <PlayerMoveComponent move="Scissors" onClick={this.makeMove.bind(this)} />
@@ -244,7 +261,7 @@ class App extends React.Component {
             <div style={headerStyle}>
               <RaisedButton onClick={this.clearCurrentGame.bind(this)} label="Back" secondary={true} style={buttonStyle}/>
             </div>
-          </div>}
+          </Paper>}
         </div>
       </div>
         );

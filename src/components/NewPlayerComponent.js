@@ -1,27 +1,40 @@
 import React from 'react';
+import TextField from 'material-ui/lib/text-field';
+import RaisedButton from 'material-ui/lib/raised-button';
+import Paper from 'material-ui/lib/paper';
+
+const labelStyle = {
+  fontFamily: 'Roboto',
+  marginRight: '1em'
+};
+
+const paperStyle = {
+  margin: 20,
+  padding: 40
+};
+
+const buttonStyle = {
+  margin: 12
+};
 
 class NewPlayerComponent extends React.Component {
   createPlayer(event) {
     event.preventDefault();
-    console.log("Create Player Called!");
-    let newPlayer = this.refs.playerName.value;
+    let newPlayer = this.refs.playerName.getValue();
     this.props.onCreate(newPlayer);
-    this.refs.playerName.value = "";
   }
 
   render() {
     return(
-      <div>
-        <form onSubmit={this.createPlayer.bind(this)}>
-          <div>
-            <label>Player Name:</label>
-            <input type="text" ref="playerName" placeholder="What's your name?"/>
-          </div>
-          <div>
-            <input type="submit" value="Save"/>
-          </div>
-        </form>
-      </div>
+      <Paper style={paperStyle} zDepth={1} rounded={false}>
+        <div>
+          <label style={labelStyle}>Player Name:</label>
+          <TextField ref="playerName" hintText="What's your name?"/>
+        </div>
+        <div>
+          <RaisedButton onClick={this.createPlayer.bind(this)} label="Join" style={buttonStyle} primary={true} />
+        </div>
+      </Paper>
     );
   }
 }
