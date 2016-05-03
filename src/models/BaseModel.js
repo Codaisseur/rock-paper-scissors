@@ -2,15 +2,13 @@ import SocketClient from 'socket.io-client';
 import Feathers from 'feathers-client';
 import Utils from '../lib/Utils';
 
-const API_HOST = "http://localhost:3030";
+const API_HOST = "https://protected-anchorage-55121.herokuapp.com";
 
 class BaseModel {
   defaults() { return {}; }
 
   constructor(resource_name, host = API_HOST) {
     this.utils = new Utils();
-    console.log(resource_name);
-    console.log(this.utils.pluralize(resource_name));
 		this.socket = new SocketClient(host);
 		this.app = Feathers().configure(Feathers.socketio(this.socket));
 		this.service = this.app.service(this.utils.pluralize(resource_name));
@@ -18,7 +16,6 @@ class BaseModel {
 		this.resources = [];
 
 		this.service.find(function(error, resources) {
-      console.log(resources);
 			this.resources = resources.data;
 			this.inform();
 		}.bind(this));
@@ -41,7 +38,6 @@ class BaseModel {
   }
 
 	createResource(resource) {
-    console.log('createResource');
 		this.resources = this.resources.concat(resource);
 		this.inform();
 	}
@@ -63,7 +59,6 @@ class BaseModel {
 	}
 
 	addResource(properties = {}) {
-    console.log('addResource');
 		this.service.create(this.utils.extend({}, this.defaults(), properties));
   }
 

@@ -1,4 +1,9 @@
 import React from 'react';
+import RaisedButton from 'material-ui/lib/raised-button';
+
+const buttonStyle = {
+  margin: 12,
+};
 
 class PlayerMoveComponent extends React.Component {
   makeMove() {
@@ -7,7 +12,7 @@ class PlayerMoveComponent extends React.Component {
 
   render() {
     return (
-      <button onClick={this.makeMove.bind(this)}>{this.props.move}</button>
+      <RaisedButton onClick={this.makeMove.bind(this)} label={this.props.move} style={buttonStyle} />
     );
   }
 }

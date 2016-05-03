@@ -1,4 +1,22 @@
 import React from 'react';
+import FlatButton from 'material-ui/lib/flat-button';
+import ListItem from 'material-ui/lib/lists/list-item';
+
+const winnerIconStyle = {
+  color: "#FFD54F"
+};
+
+const drawIconStyle = {
+  color: "#90CAF9"
+};
+
+const loserIconStyle = {
+  color: "#EC407A"
+};
+
+const defaultIconStyle = {
+  color: "#3F51B5"
+};
 
 class GameListItemComponent extends React.Component {
   selectGame() {
@@ -46,23 +64,37 @@ class GameListItemComponent extends React.Component {
     }
   }
 
+  rightIcon() {
+    if (this.playerOrYou(this.props.game.winner) === "You") {
+      return (<i className="material-icons" style={winnerIconStyle}>star</i>);
+    }
+
+    if (this.props.game.winner === "draw") {
+      return (<i className="material-icons" style={drawIconStyle}>thumbs_up_down</i>);
+    }
+
+    if (this.gameOpen()) {
+      return (<i className="material-icons" style={defaultIconStyle}>videogame_asset</i>);
+    }
+  }
+
   render() {
     return (
-      <li>
+      <ListItem onClick={this.selectGame.bind(this)} rightIcon={this.rightIcon()}>
         Game by {this.props.game.playerOne}
 
         { this.gameOpen() && !this.gameAlreadyJoined() &&
-          <button onClick={this.selectGame.bind(this)}>Join Game</button> }
+          <FlatButton onClick={this.selectGame.bind(this)} label="Join" primary={true} /> }
 
         { this.gameOpen() && this.gameAlreadyJoined() &&
-          <button onClick={this.selectGame.bind(this)}>Resume Game</button> }
+          <FlatButton onClick={this.selectGame.bind(this)} label="Resume" secondary={true} /> }
 
         { !this.gameFinished() && this.gameFull() &&
-          <span>(Full)</span> }
+          <FlatButton onClick={this.selectGame.bind(this)} label="Full" disabled={true} /> }
 
         { this.gameFinished() &&
-          <span>({this.theWinner()})</span> }
-      </li>
+          <FlatButton onClick={this.selectGame.bind(this)} label={this.theWinner()} disabled={true} /> }
+      </ListItem>
     );
   }
 }
